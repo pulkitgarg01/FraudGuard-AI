@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Any
 from pydantic import BaseModel, Field, ConfigDict
 
 
@@ -49,6 +49,27 @@ class TransactionPredictRequest(BaseModel):
     )
 
 
+# ── SHAP Explanation schemas ───────────────────────────────────────────────────
+
+class ExplanationFactor(BaseModel):
+    """A single SHAP-derived factor contributing to the fraud prediction."""
+    feature: str
+    direction: str          # "increases_risk" or "reduces_risk"
+    relative_impact: float  # 0.0–1.0, relative to strongest factor in this group
+
+
+class Explanation(BaseModel):
+    """
+    SHAP explanation for one prediction.
+    'available' is False if SHAP could not run (e.g., not installed).
+    Factors explain why the XGBoost MODEL produced its output — not why
+    fraud occurred in reality.
+    """
+    available: bool
+    top_risk_factors:       List[ExplanationFactor] = []
+    top_protective_factors: List[ExplanationFactor] = []
+
+
 class TransactionPredictResponse(BaseModel):
     """Schema for POST /predict response payload."""
     transaction_id: str
@@ -58,6 +79,7 @@ class TransactionPredictResponse(BaseModel):
     risk_score: int
     risk_level: str
     model_used: str
+    explanation: Optional[Explanation] = None
 
     model_config = ConfigDict(
         json_schema_extra={

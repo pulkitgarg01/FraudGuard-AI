@@ -35,17 +35,18 @@ def predict_transaction(data: Dict[str, Any]) -> Dict[str, Any]:
         - model_used ('XGBoost')
     """
     # Call the ML pipeline
-    # The pipeline internally handles loading the model and preprocessing
+    # The pipeline internally handles loading the model, preprocessing, and SHAP.
     ml_result = ml_predict(data)
 
-    # ml_result contains: prediction, fraud_probability, risk_score, risk_level
+    # ml_result contains: prediction, fraud_probability, risk_score, risk_level, explanation
     prediction = ml_result["prediction"]
-    
+
     return {
-        "prediction": prediction,
-        "prediction_label": "Fraud" if prediction == 1 else "Legitimate",
+        "prediction":        prediction,
+        "prediction_label":  "Fraud" if prediction == 1 else "Legitimate",
         "fraud_probability": ml_result["fraud_probability"],
-        "risk_score": ml_result["risk_score"],
-        "risk_level": ml_result["risk_level"],
-        "model_used": "XGBoost"
+        "risk_score":        ml_result["risk_score"],
+        "risk_level":        ml_result["risk_level"],
+        "model_used":        "XGBoost",
+        "explanation":       ml_result.get("explanation"),
     }

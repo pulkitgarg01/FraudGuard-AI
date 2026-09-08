@@ -48,13 +48,14 @@ def predict(
 
         # Step 5: Return structured response
         return {
-            "transaction_id": transaction_id,
-            "prediction": result["prediction"],
-            "prediction_label": result["prediction_label"],
+            "transaction_id":    transaction_id,
+            "prediction":        result["prediction"],
+            "prediction_label":  result["prediction_label"],
             "fraud_probability": result["fraud_probability"],
-            "risk_score": result["risk_score"],
-            "risk_level": result["risk_level"],
-            "model_used": result["model_used"]
+            "risk_score":        result["risk_score"],
+            "risk_level":        result["risk_level"],
+            "model_used":        result["model_used"],
+            "explanation":       result.get("explanation"),
         }
 
     except Exception as e:

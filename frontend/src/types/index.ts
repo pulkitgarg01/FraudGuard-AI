@@ -23,6 +23,20 @@ export interface TransactionPredictRequest {
 
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH';
 
+// ── SHAP Explanation types ─────────────────────────────────────────────────────
+
+export interface ExplanationFactor {
+  feature: string;
+  direction: 'increases_risk' | 'reduces_risk';
+  relative_impact: number;   // 0.0–1.0, for relative bar widths — NOT a probability
+}
+
+export interface Explanation {
+  available: boolean;
+  top_risk_factors:       ExplanationFactor[];
+  top_protective_factors: ExplanationFactor[];
+}
+
 export interface PredictResponse {
   transaction_id: string;
   prediction: 0 | 1;
@@ -30,6 +44,7 @@ export interface PredictResponse {
   fraud_probability: number;
   risk_score: number;
   risk_level: RiskLevel;
+  explanation?: Explanation;
 }
 
 export interface TransactionHistoryItem {
